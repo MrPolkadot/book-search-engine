@@ -11,7 +11,7 @@ import { setContext } from "@apollo/client/link/context";
 import { Outlet } from "react-router-dom";
 
 import Navbar from "./components/Navbar";
-import auth from "../../server/utils/auth";
+//import auth from "../../server/utils/auth";
 
 //Constructs our main GraphQL API endpoint
 const httpLink = createHttpLink({
@@ -31,6 +31,7 @@ const authLink = setContext((_, { headers }) => {
 });
 
 const client = new ApolloClient({
+  uri: "graphql",
   link: authLink.concat(httpLink),
   cache: new InMemoryCache(),
 });

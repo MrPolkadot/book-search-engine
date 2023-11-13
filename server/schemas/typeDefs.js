@@ -2,23 +2,23 @@ const gql = require("graphql-tag");
 
 const typeDefs = gql`
     input BookInput {
-        authors: [String!]
-        description: String
+        authors: [String]
+        description: String!
         title: String!
-        bookId: ID!
+        bookId: String!
         image: String
-        link: String!
+        link: String
     }
 
 
     type Query {
-        me: [User]
+        me: User
     }
 
     type Mutation {
         login(email: String!, password: String!): Auth
         addUser(username: String!, email: String!, password: String!): Auth
-        saveBook(bookData: BookInput): User
+        saveBook(bookData: BookInput!): User
         removeBook(bookId: ID!): User
     }
 
@@ -32,7 +32,7 @@ const typeDefs = gql`
 
     type Book {
         bookId: ID!
-        authors: [String!]
+        authors: [String]
         description: String
         title: String!
         image: String
@@ -43,23 +43,7 @@ const typeDefs = gql`
         token: ID!
         user: User
     }
-
-
-
-
-
-`
-
-
-
-
-
-
-
-
-
-
-
+`;
 
 
 
