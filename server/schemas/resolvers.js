@@ -1,12 +1,12 @@
-const { sign } = require("jsonwebtoken");
 const { User, Book } = require("../models");
 const { signToken, AuthenticationError } = require("../utils/auth");
 
 const resolvers = {
     Query: {
-        me: async (parent, args, context) => {
+        user: async (parent, args, context) => {
             if (context.user) {
-                const userData = await User.findOne({ _id: context.user._id }).select("-__v -password");
+                const userData = await User.findOne({ _id: context.user._id }).select("-__v -password").
+                    populate("savedBooks");
                 return userData;
             }
             throw AuthenticationError;
@@ -17,7 +17,7 @@ const resolvers = {
             const user = await User.findOne({ email });
 
             if (!user) {
-                throw AuthenticationError("No user found");
+                throw AuthenticationError;
             }
 
             const correctPw = await user.isCorrectPassword(password);
@@ -35,13 +35,13 @@ const resolvers = {
             const token = signToken(user);
             return { token, user };
         },
-        saveBook: async (parent, { bookData }, context) => {
+        saveBook: async (parent, { bookToSave }, context) => {
             if (context.user) {
                 const updatedUser = await User.findOneAndUpdate(
                     { _id: context.user._id },
-                    { $addToSet: { savedBooks: bookData } },
+                    { $addToSet: { savedBooks: bookToSave } },
                     { new: true },
-                ).populate("books");
+                ).populate("savedBooks");
                 return updatedUser;
             };
             throw AuthenticationError;
